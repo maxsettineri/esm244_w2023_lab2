@@ -122,5 +122,21 @@ for(i in 1:folds) {
               test_gp = i)
   rmse_df <- bind_rows(rmse_df, kfold_rmse_df)
 }
+
+rmse_df %>% 
+  summarize(mean_rmse_mdl1 = mean(rmse_mdl1),
+            mean_rmse_mdl2 = mean(rmse_mdl2),
+            mean_rmse_mdl3 = mean(rmse_mdl3))
 ```
 
+# Finalize the model
+
+```{r}
+final_mdl <- lm(f2, data = penguins_clean)
+```
+
+Our final model:
+`r extract_eq(final_mdl, wrap = TRUE)`
+
+And with coefficients:
+`r extract_eq(final_mdl, wrap = TRUE, use_coefs = TRUE)`
