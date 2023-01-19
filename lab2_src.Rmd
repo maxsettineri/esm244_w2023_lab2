@@ -5,7 +5,52 @@ date: "2023-01-19"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup, echo = TRUE, message = FALSE, warning = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+
+library(tidyverse)
+library(palmerpenguins)
+library(AICcmodavg)
+library(equatiomatic)
 ```
+
+# Predicting penguin mass
+
+```{r}
+penguins_clean <- penguins %>% 
+  drop_na() %>% 
+  rename(mass = body_mass_g,
+         bill_l = bill_length_mm,
+         bill_d = bill_depth_mm,
+         flip_l = flipper_length_mm) 
+
+mdl1 <- lm(mass ~ bill_l + bill_d + flip_l + species + sex + island, data = penguins_clean)
+
+# summary(mdl1)
+# AIC(mdl1)
+```
+
+```{r}
+# allows us to look at above model as single variable - makes it cleaner
+f1 <- mass ~ bill_l + bill_d + flip_l + species + sex + island 
+
+# same model as above
+mdl1 <- lm(f1, data = penguins_clean)
+
+f2 <- mass ~ bill_l + bill_d + flip_l + species +sex
+mdl2 <- lm(f2, data = penguins_clean)
+
+f3 <- mass ~ bill_d + flip_l + species + sex
+mdl3 <- lm(f3, data = penguins_clean)
+
+AIC(mdl1, mdl2, mdl3)
+BIC(mdl1, mdl2, mdl3)
+
+AICcmodavg::AICc(mdl1)
+
+aictab(list(mdl1, mdl2, mdl3))
+bictab(list(mdl1, mdl2, mdl3))
+
+```
+
 
